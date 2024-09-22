@@ -17,8 +17,8 @@ simulated_data <- read_csv("data/raw_data/simulated_crime_data.csv")
 
 # Check year range
 year_range <- simulated_crime_data$report_year
-check_year_range <- all(year_range >= 2014 & year_range <= 2024)
-check_year_range
+test_year_range <- all(year_range >= 2014 & year_range <= 2024)
+test_year_range
 
 # Test if all crime types are within the defined set
 test_crime_type <- all(simulated_crime_data$crime_type %in% 
