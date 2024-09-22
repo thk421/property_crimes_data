@@ -1,44 +1,36 @@
 #### Preamble ####
-# Purpose: Cleans the raw plane data recorded by two observers..... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 6 April 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
-# License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Purpose: Cleans the raw crime data into an analysis dataset
+# Author: Tina Kim
+# Date: 19 September 2024
+# Contact: tinak.kim@mail.utoronto.ca
+# License: University of Toronto
+# Pre-requisites: Need to have downloaded the data
+# Any other information needed? None
 
 #### Workspace setup ####
 library(tidyverse)
+library(dplyr)
+library(stringr)
 
 #### Clean data ####
-raw_data <- read_csv("inputs/data/plane_data.csv")
+raw_data <- read_csv("data/raw_data/raw_crime_data.csv")
 
-cleaned_data <-
-  raw_data |>
-  janitor::clean_names() |>
-  select(wing_width_mm, wing_length_mm, flying_time_sec_first_timer) |>
-  filter(wing_width_mm != "caw") |>
-  mutate(
-    flying_time_sec_first_timer = if_else(flying_time_sec_first_timer == "1,35",
-                                   "1.35",
-                                   flying_time_sec_first_timer)
-  ) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "490",
-                                 "49",
-                                 wing_width_mm)) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "6",
-                                 "60",
-                                 wing_width_mm)) |>
-  mutate(
-    wing_width_mm = as.numeric(wing_width_mm),
-    wing_length_mm = as.numeric(wing_length_mm),
-    flying_time_sec_first_timer = as.numeric(flying_time_sec_first_timer)
-  ) |>
-  rename(flying_time = flying_time_sec_first_timer,
-         width = wing_width_mm,
-         length = wing_length_mm
-         ) |> 
-  tidyr::drop_na()
+cleaned_data <- raw_data %>%
+  # Use the 'CATEGORY' column to only filter out crimes against property
+  filter(CATEGORY == "Crimes Against Property") |>
+  # Remove unnecessary variable 'CATEGORY' 
+  mutate(CATEGORY = NULL) |>
+  # Rename variable subtype into 'CRIME_TYPE'
+  rename(CRIME_TYPE = SUBTYPE) |>
+  # Combine different Break & Enter property types into Break & Enter crimes
+  mutate(CRIME_TYPE = if_else(str_detect(CRIME_TYPE, "Break & Enter"), 
+                              "Break & Enter", CRIME_TYPE)) |>
+  # Combine different Theft prices into Theft crimes
+  mutate(CRIME_TYPE = if_else(str_detect(CRIME_TYPE, "Theft"), 
+                              "Theft", CRIME_TYPE))
+
+head(cleaned_data)
+
 
 #### Save data ####
-write_csv(cleaned_data, "outputs/data/analysis_data.csv")
+write_csv(cleaned_data, "data/analysis_data/analysis_data.csv")
