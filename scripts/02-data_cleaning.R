@@ -29,7 +29,10 @@ cleaned_data <- raw_data %>%
                               "Home Invasion", CRIME_TYPE)) |>
   # Combine different Theft prices into Theft crimes
   mutate(CRIME_TYPE = if_else(str_detect(CRIME_TYPE, "Theft"), 
-                              "Theft", CRIME_TYPE))
+                              "Theft", CRIME_TYPE)) |>
+  # Make a categorical column 'COVID_PERIOD' that indicates Pre-Covid for years 
+  # before 2020 and Post-Covid for years 2020 and beyond.
+  mutate(COVID_PERIOD = ifelse(REPORT_YEAR < 2020, "Pre-COVID", "Post-COVID"))
 
 
 #### Save data ####
