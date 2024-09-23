@@ -1,13 +1,11 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "An Analysis of Home Invasion and Property Theft Crimes in Toronto before and after COVID-19"
 author: 
-  - First author
-  - Another author
+  - Tina Kim
 thanks: "Code and data are available at: LINK."
-date: today
+date: 23 September 2024
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "This paper investigates how the COVID-19 pandemic impacted home invasion and property theft crime rates across Toronto by comparing trends before and after the onset of the pandemic in 2020. The findings reveal that there is a significant shift in crime patterns. This suggests that unprecedented epidemics can cause shift in crime dynamics and it is crucial to consider such aftermaths in advanced in the future."
 format: pdf
 number-sections: true
 bibliography: references.bib
@@ -25,28 +23,31 @@ library(palmerpenguins)
 
 # Introduction
 
-You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
+“To prevent the possibility of being attacked in your home, leave your fobs at your front door” (Global News 2024). In March of 2024, Constable Marco Ricciardi sparked controversy with a comment made at a community meeting, igniting public debate. Given the alarming rise in home invasion crimes and thefts in 2024 compared to 2023, it is essential to identify the reasons behind this surge and explore effective prevention strategies.
 
-The remainder of this paper is structured as follows. @sec-data....
+For years, crime rates have been linked to economic conditions. During times of economic crisis, individuals may become more desperate to meet their basic needs, often resulting in an increase in crimes like theft (Rosenfeld & Fornango 2008). The COVID-19 pandemic is a recent event that left many people unemployed. During this time, individuals faced not only health challenges but significant economic hardships as well. As a result, one might expect an increase in overall crime rates. However, it is important to consider that lockdowns and COVID-19 restrictions kept people at home, which may have also influenced crime trends during this period (Frith et al. 2022).In particular, we are interested in property invasion and theft crime rates. With homes continuously occupied by their owners, it became more challenging for intruders to break in. This paper aims to investigate if the economic crisis triggered by the pandemic was a strong enough factor to drive individuals to commit property-related crimes, despite the increased home presence and security.
 
+This paper tests the hypothesis that there is a significant difference in property invasion and theft counts before and after COVID-19. The remainder of this paper is structured as follows. In @sec-data, the raw data is introduced and the cleaning process is briefly mentioned. In @sec-model, the models are introduced to easily visualize the data. First, it explores the number of invasion and theft reports in Toronto across different districts before and after the year 2020 when major lockdowns began. Next, it will investigate the districts that had the most significant changes. Furthermore, we compare the property invasion and theft reports to overall crime reports across the different districts. Finally, we see if the number of counts cleared contribute to the overall trend of crime rate changes. In @sec-discussion, findings are linked to contextual factors such as increased unemployment, lockdowns, and neighborhood reputation sourced from literature papers. Limitations are noted and suggestions for future solutions are discussed. 
 
 
 # Data {#sec-data}
 
-Some of our data is of penguins (@fig-bills), from @palmerpenguins.
+The Police Annual Statistical Report - Reported Crimes dataset includes the report year across the 16 districts in Toronto. The categories are divided into either ‘Crimes Against Person’ and ‘Crimes Against Property’ with subtypes to name specific crimes. This dataset includes the count of the total number of crime reports and the number of counts cleared. 
+
+
 
 ```{r}
 #| label: fig-bills
 #| fig-cap: Bills of penguins
 #| echo: false
 
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
+#ggplot(penguins, aes(x = island, fill = species)) +
+ # geom_bar(alpha = 0.8) +
+#  scale_fill_manual(values = c("darkorange","purple","cyan4"),
+ #                   guide = "none") +
+#  theme_minimal() +
+ # facet_wrap(~species, ncol = 1) +
+#  coord_flip()
 ```
 
 Talk more about it.
@@ -62,19 +63,19 @@ And also planes (@fig-planes). (You can change the height and width, but don't w
 
 analysis_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
 
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
-  theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
+#analysis_data |> 
+ # ggplot(aes(x = width, y = length)) +
+  #geom_point(alpha = 0.8) +
+  #theme_minimal() +
+  #labs(x = "Wing width (mm)",
+   #    y = "Wing length (mm)")
 ```
 
 Talk way more about it. 
 
 
 
-# Model
+# Model {#sec-model}
 
 The goal of our modelling strategy is twofold. Firstly,...
 
@@ -126,19 +127,19 @@ first_model <-
 #| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
 #| warning: false
 
-modelsummary::modelsummary(
-  list(
-    "First model" = first_model
-  ),
-  statistic = "mad",
-  fmt = 2
-)
+#modelsummary::modelsummary(
+ # list(
+  #  "First model" = first_model
+  #),
+  #statistic = "mad",
+  #fmt = 2
+#)
 ```
 
 
 
 
-# Discussion
+# Discussion {#sec-discussion}
 
 ## First discussion point {#sec-first-point}
 
@@ -179,15 +180,15 @@ In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. Th
 #| fig-cap: "Examining how the model fits, and is affected by, the data"
 #| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
 
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
+#pp_check(first_model) +
+ # theme_classic() +
+  #theme(legend.position = "bottom")
 
-posterior_vs_prior(first_model) +
-  theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
+#posterior_vs_prior(first_model) +
+ # theme_minimal() +
+#  scale_color_brewer(palette = "Set1") +
+ # theme(legend.position = "bottom") +
+  #coord_flip()
 ```
 
 ## Diagnostics
@@ -206,9 +207,9 @@ posterior_vs_prior(first_model) +
 #| fig-subcap: ["Trace plot", "Rhat plot"]
 #| layout-ncol: 2
 
-plot(first_model, "trace")
+#plot(first_model, "trace")
 
-plot(first_model, "rhat")
+#plot(first_model, "rhat")
 ```
 
 
@@ -217,5 +218,7 @@ plot(first_model, "rhat")
 
 
 # References
+
+# REMOVE THIS AFTER: References should be added using BibTeX. Be sure to reference R, and any R packages you use, as well as the dataset. Strong submissions will draw on related literature and reference those.
 
 
