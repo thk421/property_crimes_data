@@ -24,9 +24,9 @@ cleaned_data <- raw_data %>%
   rename(CRIME_TYPE = SUBTYPE) |>
   # Remove 'Fraud' rows from 'CRIME_TYPE' column
   filter(CRIME_TYPE != "Fraud") |>
-  # Combine different Break & Enter property types into Break & Enter crimes
+  # Combine different Break & Enter property types into Home Invasion crimes
   mutate(CRIME_TYPE = if_else(str_detect(CRIME_TYPE, "Break & Enter"), 
-                              "Break & Enter", CRIME_TYPE)) |>
+                              "Home Invasion", CRIME_TYPE)) |>
   # Combine different Theft prices into Theft crimes
   mutate(CRIME_TYPE = if_else(str_detect(CRIME_TYPE, "Theft"), 
                               "Theft", CRIME_TYPE))
