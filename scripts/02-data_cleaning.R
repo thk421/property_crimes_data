@@ -22,6 +22,8 @@ cleaned_data <- raw_data %>%
   mutate(CATEGORY = NULL) |>
   # Rename variable subtype into 'CRIME_TYPE'
   rename(CRIME_TYPE = SUBTYPE) |>
+  # Remove 'Fraud' rows from 'CRIME_TYPE' column
+  filter(CRIME_TYPE != "Fraud") |>
   # Combine different Break & Enter property types into Break & Enter crimes
   mutate(CRIME_TYPE = if_else(str_detect(CRIME_TYPE, "Break & Enter"), 
                               "Break & Enter", CRIME_TYPE)) |>
@@ -32,3 +34,4 @@ cleaned_data <- raw_data %>%
 
 #### Save data ####
 write_csv(cleaned_data, "data/analysis_data/analysis_data.csv")
+
