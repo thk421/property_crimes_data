@@ -10,11 +10,8 @@
 
 
 #### Workspace setup ####
-
 library(tidyverse)
-library(janitor)
-library(knitr)
-library(opendatatoronto)
+
 
 #### Simulate data ####
 
