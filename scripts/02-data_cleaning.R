@@ -15,6 +15,8 @@ library(tidyverse)
 raw_data <- read_csv("data/raw_data/raw_crime_data.csv")
 
 cleaned_data <- raw_data %>%
+  # Remove rows with missing variables
+  na.omit(raw_data) |>
   # Remove unnecessary variable 'CATEGORY' 
   mutate(CATEGORY = NULL) |>
   # Rename variables for better understanding 
