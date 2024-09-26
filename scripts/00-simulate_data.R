@@ -4,7 +4,7 @@
 # Author: Tina Kim
 # Date: 26 September 2024
 # Contact: tinak.kim@mail.utoronto.ca
-# License: University of Toronto
+# License: MIT
 # Pre-requisites: Know where to get Toronto property crime data.
 # Any other information needed? None
 

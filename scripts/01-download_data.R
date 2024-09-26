@@ -1,22 +1,19 @@
 #### Preamble ####
 # Purpose: Downloads and saves the data from Open Data Toronto
-# Report - Reported Crimes data from Open Data Toronto
 # Author: Tina Kim
-# Date: 19 September 2024
+# Date: 26 September 2024
 # Contact: tinak.kim@mail.utoronto.ca
-# License: University of Toronto
+# License: MIT
 # Pre-requisites: None
 # Any other information needed? None
 
 
 #### Workspace setup ####
 library(opendatatoronto)
-library(tidyverse)
+library(dplyr)
 
 
 #### Download data ####
-library(opendatatoronto)
-library(dplyr)
 
 # get package
 package <- show_package("police-annual-statistical-report-reported-crimes")
@@ -35,3 +32,4 @@ crime_data <- filter(datastore_resources, row_number()==1) %>% get_resource()
 #### Save data ####
 write_csv(crime_data, "data/raw_data/raw_crime_data.csv") 
 
+head(crime_data)
