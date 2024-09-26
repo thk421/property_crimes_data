@@ -1,38 +1,38 @@
 #### Preamble ####
 # Purpose: Cleans the raw crime data into an analysis dataset
 # Author: Tina Kim
-# Date: 19 September 2024
+# Date: 26 September 2024
 # Contact: tinak.kim@mail.utoronto.ca
-# License: University of Toronto
+# License: MIT
 # Pre-requisites: Need to have downloaded the data
 # Any other information needed? None
 
 #### Workspace setup ####
 library(tidyverse)
-library(dplyr)
-library(stringr)
+
 
 #### Clean data ####
 raw_data <- read_csv("data/raw_data/raw_crime_data.csv")
 
 cleaned_data <- raw_data %>%
-  # Use the 'CATEGORY' column to only filter out crimes against property
-  filter(CATEGORY == "Crimes Against Property") |>
   # Remove unnecessary variable 'CATEGORY' 
   mutate(CATEGORY = NULL) |>
-  # Rename variable subtype into 'CRIME_TYPE'
-  rename(CRIME_TYPE = SUBTYPE) |>
-  # Remove 'Fraud' rows from 'CRIME_TYPE' column
-  filter(CRIME_TYPE != "Fraud") |>
-  # Combine different Break & Enter property types into Home Invasion crimes
-  mutate(CRIME_TYPE = if_else(str_detect(CRIME_TYPE, "Break & Enter"), 
-                              "Home Invasion", CRIME_TYPE)) |>
-  # Combine different Theft prices into Theft crimes
-  mutate(CRIME_TYPE = if_else(str_detect(CRIME_TYPE, "Theft"), 
-                              "Theft", CRIME_TYPE)) |>
-  # Make a categorical column 'COVID_PERIOD' that indicates Pre-Covid for years 
-  # before 2020 and Post-Covid for years 2020 and beyond.
-  mutate(COVID_PERIOD = ifelse(REPORT_YEAR < 2020, "Pre-COVID", "Post-COVID"))
+  # Rename variables for better understanding 
+  rename(year = REPORT_YEAR) |>
+  rename(division = DIVISION) |>
+  rename(crime = SUBTYPE) |>
+  rename(count = COUNT_) |>
+  rename(count_cleared = COUNT_CLEARED) |>
+  # Filter report years to 2016-2023
+  filter(year >= 2016 & year <= 2023) |>
+  # Combine different Break & Enter property types into a single Home Invasion crime category
+  mutate(crime = if_else(str_detect(crime, "Break & Enter"), 
+                              "Home Invasion", crime)) |>
+  # Combine different Theft prices into a single Property Theft crime category
+  mutate(crime = if_else(str_detect(crime, "Theft"), 
+                              "Property Theft", crime)) |>
+  # Make a new column called 'covid_period' to indicate if the report was before or after 2020
+  mutate(covid_period = ifelse(year < 2020, 'Pre-COVID', 'Post-COVID'))
 
 
 #### Save data ####
