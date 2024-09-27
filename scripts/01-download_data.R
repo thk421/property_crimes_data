@@ -20,15 +20,17 @@ package <- show_package("police-annual-statistical-report-reported-crimes")
 package
 
 # get all resources for this package
-resources <- list_package_resources("police-annual-statistical-report-reported-crimes")
+resources <-
+  list_package_resources("police-annual-statistical-report-reported-crimes")
 
-# identify datastore resources; by default, Toronto Open Data sets datastore resource format to CSV for non-geospatial and GeoJSON for geospatial resources
-datastore_resources <- filter(resources, tolower(format) %in% c('csv', 'geojson'))
+# identify datastore resources; by default, Toronto Open Data sets datastore
+# resource format to CSV for non-geospatial and GeoJSON for geospatial resources
+datastore_resources <-
+  filter(resources, tolower(format) %in% c("csv", "geojson"))
 
 # load the first datastore resource as a sample
-crime_data <- filter(datastore_resources, row_number()==1) %>% get_resource()
+crime_data <- filter(datastore_resources, row_number() == 1) %>% get_resource()
 
 
 #### Save data ####
-write_csv(crime_data, "data/raw_data/raw_crime_data.csv") 
-
+write_csv(crime_data, "data/raw_data/raw_crime_data.csv")
