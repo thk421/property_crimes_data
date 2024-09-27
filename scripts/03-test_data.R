@@ -85,3 +85,71 @@ if (all.equal(simulated_crime_data, simulated_crime_data_test)) {
   print("The new simulated data does not match the original simulated data.")
 }
 
+#### Test cleaned data ####
+
+cleaned_data <- read_csv("data/analysis_data/analysis_data.csv")
+
+# Check year range
+year_range <- cleaned_data$year
+test_year_range <- all(year_range >= 2016 & year_range <= 2023)
+
+if (test_year_range) {
+  print("All years are in the range 2016 to 2023.")
+} else {
+  print("Not all years are in the range 2016 to 2023.")
+}
+
+# Test if crime types of interest are within the defined set
+test_crime_type <- any(cleaned_data$crime %in% 
+                         c("Home Invasion", "Property Theft"))
+
+
+if (test_crime_type) {
+  print("Contains crime types of interest.")
+} else {
+  print("Does not contain crime types of interest.")
+}
+
+
+# Test if all divisions are within the defined set
+test_divisions <- all(cleaned_data$division 
+                      %in% c("D11", "D12", "D13", "D14", "D22", "D23", "D31", 
+                             "D32", "D33", "D41", "D42", "D43", "D51", "D52", 
+                             "D53", "D55", "NSA"))
+
+if (test_divisions) {
+  print("All divisons are valid.")
+} else {
+  print("Not all divisions are valid.")
+}
+
+# Test if all covid_period values are either "Pre-COVID" or "Post-COVID" 
+test_cleared_values <- all(cleaned_data$covid_period %in% c("Pre-COVID", "Post-COVID"))
+
+if (test_cleared_values) {
+  print("All covid_period values are either Pre-COVID or Post-COVID.")
+} else {
+  print("Not all covid_period values are Pre-COVID or Post-COVID.")
+}
+
+# Test if count and count_cleared values are non-zero
+non_negative <- all(cleaned_data$count >= 0) && all(cleaned_data$count_cleared >= 0)
+
+if (non_negative) {
+  print("All count and count_cleared values are non-negative.")
+} else {
+  print("There are negative values in count or count_cleared.")
+}
+
+# Test if there are empty values in the data
+
+data_variables <- c("year", "division", "crime", "count", "count_cleared", "covid_period")
+
+for (var in data_variables) {
+  if (all(is.na(cleaned_data[[var]]))) {
+    print(paste(var, "contains NA values."))
+  } else {
+    print(paste(var, "does not contain any NA values."))
+  }
+}
+
