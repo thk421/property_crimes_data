@@ -22,12 +22,14 @@ set.seed(123)
 
 # Use 2016 through 2023 to represent years before and after onset of COVID-19
 year <- 2016:2023
+
 # Represent each of the divisions in Toronto
-division <- c("D11", "D12", "D13", "D14", "D22", "D23", "D31", "D32", 
+division <- c("D11", "D12", "D13", "D14", "D22", "D23", "D31", "D32",
               "D33", "D41", "D42", "D43", "D51", "D52", "D53", "D55")
-# Represent possible crime types 
-crime <- c("Break and Enter", "Theft", "Fraud", "Assault", "Sexual Assault",
-           "Attempted Murder", "Other")
+
+# Represent possible crime types
+crime <- c("Break and Enter", "Theft", "Fraud", "Assault",
+           "Sexual Assault", "Attempted Murder", "Other")
 
 # Randomly simulate 500 crime reports in random divisions in random years,
 # then whether or not the crime report was solved
@@ -41,6 +43,6 @@ simulated_crime_data <-
 
 head(simulated_crime_data)
 
+
 #### Save simulated data ####
 write_csv(simulated_crime_data, file = "data/raw_data/simulated_crime_data.csv")
-
