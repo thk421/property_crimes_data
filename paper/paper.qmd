@@ -1,11 +1,11 @@
 ---
-title: "An Analysis of Home Invasion and Property Theft Crimes in Toronto before and after COVID-19"
+title: "An Analysis of Increased Home Invasion and Property Theft Crimes in Toronto after COVID-19"
 author: 
   - Tina Kim
-thanks: "Code and data are available at: LINK."
-date: 23 September 2024
+thanks: "Code and data are available at: https://github.com/thk421/property_crimes_data.git"
+date: 26 September 2024
 date-format: long
-abstract: "This paper investigates how the COVID-19 pandemic impacted home invasion and property theft crime rates across Toronto by comparing trends before and after the onset of the pandemic in 2020. The findings reveal that there is a significant shift in crime patterns. This suggests that unprecedented epidemics can cause shift in crime dynamics and it is crucial to consider such aftermaths in advanced in the future."
+abstract: "This paper investigates how the COVID-19 pandemic impacted home invasion and property theft crime rates across Toronto by comparing trends before and after the onset of the pandemic in 2020. The findings reveal that there is a significant shift in crime patterns. This suggests that unprecedented epidemics can cause shifts in crime dynamics and it is crucial to consider such aftermaths in advance in the future."
 format: pdf
 number-sections: true
 bibliography: references.bib
@@ -17,208 +17,252 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
-library(palmerpenguins)
+library(knitr)
+
+# Call the cleaned data
+cleaned_crimes_data <- 
+  read_csv(file = here::here("data/analysis_data/analysis_data.csv"), 
+           show_col_types = FALSE)
+
 ```
 
 
 # Introduction
 
-“To prevent the possibility of being attacked in your home, leave your fobs at your front door” (Global News 2024). In March of 2024, Constable Marco Ricciardi sparked controversy with a comment made at a community meeting, igniting public debate. Given the alarming rise in home invasion crimes and thefts in 2024 compared to 2023, it is essential to identify the reasons behind this surge and explore effective prevention strategies.
+“To prevent the possibility of being attacked in your home, leave your fobs at your front door” [@rocca2024]. In March of 2024, Constable Marco Ricciardi sparked controversy with a comment made at a community meeting, igniting public debate surrounding home security and personal safety. Given the alarming rise in home invasion crimes and thefts in 2024 compared to 2023, it is essential to identify the reasons behind this surge and explore effective prevention strategies.
 
-For years, crime rates have been linked to economic conditions. During times of economic crisis, individuals may become more desperate to meet their basic needs, often resulting in an increase in crimes like theft (Rosenfeld & Fornango 2008). The COVID-19 pandemic is a recent event that left many people unemployed. During this time, individuals faced not only health challenges but significant economic hardships as well. As a result, one might expect an increase in overall crime rates. However, it is important to consider that lockdowns and COVID-19 restrictions kept people at home, which may have also influenced crime trends during this period (Frith et al. 2022).In particular, we are interested in property invasion and theft crime rates. With homes continuously occupied by their owners, it became more challenging for intruders to break in. This paper aims to investigate if the economic crisis triggered by the pandemic was a strong enough factor to drive individuals to commit property-related crimes, despite the increased home presence and security.
+For years, crime rates have been linked to economic conditions. During times of economic crisis, individuals may become more desperate to meet their basic needs, often resulting in an increase in crimes like theft [@rosenfeld2008]. The COVID-19 pandemic is a recent event that left many people unemployed. During this time, individuals faced not only health challenges but significant economic hardships as well. As a result, one might expect an increase in overall crime rates. However, it is important to consider that lockdowns and COVID-19 restrictions kept people at home, which may have also influenced crime trends during this period [@frith2022]. In particular, we are interested in home invasion and property theft crime rates. With homes continuously occupied by their owners, it became more challenging for intruders to break in. This paper aims to investigate if other factors such as the economic crisis triggered by the pandemic was a strong enough factor to drive individuals to commit property-related crimes, despite the increased home presence and security.
 
-This paper tests the hypothesis that there is a significant difference in property invasion and theft counts before and after COVID-19. The remainder of this paper is structured as follows. In @sec-data, the raw data is introduced and the cleaning process is briefly mentioned. In @sec-model, the models are introduced to easily visualize the data. First, it explores the number of invasion and theft reports in Toronto across different districts before and after the year 2020 when major lockdowns began. Next, it will investigate the districts that had the most significant changes. Furthermore, we compare the property invasion and theft reports to overall crime reports across the different districts. Finally, we see if the number of counts cleared contribute to the overall trend of crime rate changes. In @sec-discussion, findings are linked to contextual factors such as increased unemployment, lockdowns, and neighborhood reputation sourced from literature papers. Limitations are noted and suggestions for future solutions are discussed. 
+This paper tests the hypothesis that there is a significant difference in home invasion and property theft counts before and after COVID-19. The remainder of this paper is structured as follows. In @sec-data, the raw data is introduced and the cleaning process is briefly mentioned. A table of the first few observations are also provided. In @sec-results, results of the analysis is summarized. First, it compares the property invasion and theft reports to overall crime reports in Toronto. Then, it explores the number of invasion and theft reports in Toronto before and after the year 2020 when major lockdowns began. Furthermore, it investigates the divisions in Toronto that had the most or least significant changes. Finally, it checks if the number of counts cleared contribute to the overall trend of crime number changes. In @sec-discussion, findings are linked to contextual factors such as increased unemployment, lockdowns, and neighborhood reputation. Limitations are noted and suggestions for future solutions are discussed. 
 
 
 # Data {#sec-data}
 
-The Police Annual Statistical Report - Reported Crimes dataset includes the report year across the 16 districts in Toronto. The categories are divided into either ‘Crimes Against Person’ and ‘Crimes Against Property’ with subtypes to name specific crimes. This dataset includes the count of the total number of crime reports and the number of counts cleared. 
+The dataset titled "Police Annual Statistical Report - Reported Crimes" [@crimedata2024] used in this paper was obtained from the City of Toronto's OpenData Library [@opendatatoronto]. It consists of reported crimes that was received by the Toronto Police Service. The variable REPORT_YEAR includes the year of the report across the 16 divisions in Toronto listed in the DIVISION variable. The CATEGORY variable divides the reports into either ‘Crimes Against Person’ and ‘Crimes Against Property’, with the SUBTYPE variable to name the specific crimes committed. This dataset also includes the variable COUNT_ to indicate the total number of crime reports, and the variable COUNT_CLEARED for the number of reports cleared. Take note that the reports are not distinct occurrences, meaning there can be multiple reports for the same crime, as well as an occurrence of one crime with multiple offence types. 
 
+While other crime datasets, such as "Neighbourhood Crime Rates," are available in the Toronto OpenData Library, they were not utilized in this paper due to the focus on broader trends. Analyzing data across different divisions allows for a more contextual understanding of potential outcomes without the risk of overrepresenting localized trends in neighborhoods that may have smaller sample sizes. This type of data would be good for future analysis when trying to supplement the results found in this current paper. 
 
-
-```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
-#| echo: false
-
-#ggplot(penguins, aes(x = island, fill = species)) +
- # geom_bar(alpha = 0.8) +
-#  scale_fill_manual(values = c("darkorange","purple","cyan4"),
- #                   guide = "none") +
-#  theme_minimal() +
- # facet_wrap(~species, ncol = 1) +
-#  coord_flip()
-```
-
-Talk more about it.
-
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
+The data used in this paper is analyzed using R language [@citeR], and the R packages tidyverse [@tidyverse] and dplyr [@dplyr]. The original data was cleaned to showcase simpler variable names and to only contain non-empty data. An extra variable 'covid_period' was added to indicate if the report was before or after the onset of COVID-19 in the year 2020. A glimpse of the first few rows of the cleaned dataset is shown in @tbl-1.
 
 ```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
+#| label: tbl-1
+#| tbl-cap: First few rows of the cleaned dataset
 #| echo: false
-#| warning: false
-#| message: false
 
-analysis_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
-
-#analysis_data |> 
- # ggplot(aes(x = width, y = length)) +
-  #geom_point(alpha = 0.8) +
-  #theme_minimal() +
-  #labs(x = "Wing width (mm)",
-   #    y = "Wing length (mm)")
-```
-
-Talk way more about it. 
-
-
-
-# Model {#sec-model}
-
-The goal of our modelling strategy is twofold. Firstly,...
-
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
-
-## Model set-up
-
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
-
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
-
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
-
-
-### Model justification
-
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
-
-
-# Results
-
-Our results are summarized in @tbl-modelresults.
-
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-
-library(rstanarm)
-
-first_model <-
-  readRDS(file = here::here("models/first_model.rds"))
-```
-
-```{r}
-#| echo: false
-#| eval: true
-#| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
-#| warning: false
-
-#modelsummary::modelsummary(
- # list(
-  #  "First model" = first_model
-  #),
-  #statistic = "mad",
-  #fmt = 2
-#)
+head(cleaned_crimes_data, 10) |>
+  kable(
+    col.names = c("id", "year", "division", "crime",	"count",	"count_cleared", "covid_period"),
+  booktabs = TRUE
+  )
 ```
 
 
+# Results {#sec-results}
 
+On average, crimes have seen a decline during the onset of COVID-19, and then an increase in the following years (@fig-crimes). In 2019, there were around 120,000 crime reports, but this number jumped to approximately 140,000 by 2023. Among these reports, about 56,000 involved either home invasion or property theft cases in 2019, increasing to roughly 74,000 in 2023 (@fig-propertycrimes).
+
+The majority of the reports in property crimes were from property thefts (@fig-theft). There was a notable decline during the onset of COVID-19 from approximately 50,000 in 2019 to 39,000 in 2020. As of 2023, there was a significant increase of property theft reports at around 68,000 cases, which was the highest record over the past 8 years. In contrast, there were generally not as many home invasion cases (@fig-invasion). Unlike property thefts, the peak for home invasions was during 2019 with approximately 7,500 cases. Reports significantly declined to around 6,000 in 2020 and 5,000 in 2021, but has steadily increased back to approximately 6,000 in 2023. 
+
+Across the 16 divisions in Toronto, Division 13 showed the most significant increase in property-related crimes after COVID-19, followed by Division 32. Division 52 showed the most significant decrease in property-related crimes (@fig-divcrimechange). Division 42 and 41 exhibited minimal change in property crime rates between the two periods.
+
+As the total number of home invasion and property theft crimes increased, clearance rates decreased (@fig-crimevsclearancerate). In this figure, the clearance rate was multiplied by 1000 to adjust the visualization so that the graph could be compared against the very large numbers of crime reports. The plot shows that the number of crimes and the clearance rates both declined between the years 2020 and 2021. However, as the number of crimes rose, clearance rates have struggled to even reach levels similar to previous years. 
+
+```{r}
+#| label: fig-crimes
+#| fig-cap: Crime Reports per Year (in Toronto)
+#| echo: false
+
+crime_counts_per_year <- cleaned_crimes_data %>%
+  group_by(year) %>%
+  summarise(total_crime_count = sum(count))
+
+ggplot(crime_counts_per_year, aes(x = factor(year), y = total_crime_count)) +
+  geom_bar(stat = "identity", fill = "cornflowerblue") +
+  labs(title = "Yearly Toronto Crime Reports",
+       x = "Report Year",
+       y = "Number of Reports (in thousands)") +
+  scale_y_continuous(labels = scales::comma_format(scale = 1e-3, suffix = "k")) +  
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+
+
+```{r}
+#| label: fig-propertycrimes
+#| fig-cap: Home Invasion and Property Theft Reports per Year (in Toronto)
+#| echo: false
+
+property_crime_data <- cleaned_crimes_data %>%
+  filter(crime %in% c("Home Invasion", "Property Theft"))
+
+property_crime_counts_per_year <- property_crime_data %>%
+  group_by(year) %>%
+  summarise(total_crime_count = sum(count))
+
+ggplot(property_crime_counts_per_year, aes(x = factor(year), y = total_crime_count)) +
+  geom_bar(stat = "identity", fill = "cornflowerblue") +
+  labs(title = "Yearly Toronto Home Invasion and Property Theft Reports",
+       x = "Report Year",
+       y = "Number of Reports") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5) 
+  )
+
+```
+
+
+```{r}
+#| label: fig-theft
+#| fig-cap: Propert Theft Reports per Year (in Toronto)
+#| echo: false
+
+theft_data <- cleaned_crimes_data %>%
+  filter(crime == "Property Theft")
+
+theft_counts_per_year <- theft_data %>%
+  group_by(year) %>%
+  summarise(total_crime_count = sum(count))
+
+ggplot(theft_counts_per_year, aes(x = factor(year), y = total_crime_count)) +
+  geom_bar(stat = "identity", fill = "cornflowerblue") + 
+  labs(title = "Yearly Toronto Property Theft Reports",
+       x = "Report Year",
+       y = "Number of Reports") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5) 
+  )
+
+```
+
+
+```{r}
+#| label: fig-invasion
+#| fig-cap: Home Invasion Reports per Year (in Toronto)
+#| echo: false
+
+home_invasion_data <- cleaned_crimes_data %>%
+  filter(crime == "Home Invasion")
+
+home_invasion_counts_per_year <- home_invasion_data %>%
+  group_by(year) %>%
+  summarise(total_crime_count = sum(count))
+
+ggplot(home_invasion_counts_per_year, aes(x = factor(year), y = total_crime_count)) +
+  geom_bar(stat = "identity", fill = "cornflowerblue") +
+  labs(title = "Yearly Toronto Home Invasion Reports",
+       x = "Report Year",
+       y = "Number of Reports") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5) 
+  )
+
+```
+
+
+```{r}
+#| label: fig-divcrimechange
+#| fig-cap: Property Crime Trend Change Across 16 Toronto Divisions
+#| echo: false
+
+
+# Filter data and remove divisions that have 'No Specified Address'
+property_crime_data <- cleaned_crimes_data %>%
+  filter(crime %in% c("Home Invasion", "Property Theft")) |>
+  filter(division != "NSA") 
+
+# Group data by division and covid_period, then calculate total crimes per period
+division_crime_trends <- property_crime_data %>%
+  group_by(division, covid_period) %>%
+  summarise(total_crime_count = sum(count), .groups = "drop") %>%
+  spread(covid_period, total_crime_count, fill = 0)
+
+# Calculate the percentage change in crimes between pre-COVID and post-COVID
+division_crime_trends <- division_crime_trends %>%
+  mutate(change = ((`Post-COVID` - `Pre-COVID`) / `Pre-COVID`) * 100)
+
+# Find the division with the largest percentage change
+division_most_change <- division_crime_trends %>%
+  filter(!is.na(change)) %>%
+  arrange(desc(abs(change))) %>%
+  slice(1)
+
+# Visualize the change across divisions
+ggplot(division_crime_trends, aes(x = reorder(division, change), y = change)) +
+  geom_bar(stat = "identity", fill = "cornflowerblue") +
+  coord_flip() +
+  labs(title = "Percentage Change in Property Crime Pre- and Post-COVID",
+       x = "Division", y = "Percentage Change") +
+  theme_minimal()
+
+```
+
+
+```{r}
+#| label: fig-crimevsclearancerate
+#| fig-cap: Relationship Between Total Crime Reports and Crime Clearance Rate
+#| echo: false
+
+property_crime_data <- cleaned_crimes_data %>%
+  filter(crime %in% c('Home Invasion', 'Property Theft'))
+
+# Calculate the clearance rate of crime reports
+
+crime_trends <- property_crime_data %>%
+  group_by(year) %>%
+  summarise(total_crime_count = sum(count), 
+            cleared_crimes = sum(count_cleared, na.rm = TRUE)) %>%
+  mutate(clearance_rate = (cleared_crimes / total_crime_count) * 100)
+
+# Visualize the relationship of property crime trends and clearance rate
+
+ggplot(crime_trends, aes(x = year)) +
+  geom_line(aes(y = total_crime_count, color = "Total Crimes"), linewidth = 1) +
+  geom_line(aes(y = clearance_rate * 1000, color = "Clearance Rate (scaled)", linewidth = 1)) + #scaled the clearance rate for visibility
+  scale_y_continuous(sec.axis = sec_axis(~./1000, name = "Clearance Rate (%)")) +  # Secondary axis for clearance rate
+  labs(title = "Total Crimes vs Clearance Rate Over Time",
+       x = "Year", y = "Count / Rate") +
+  scale_color_manual(values = c("Total Crimes" = "cornflowerblue", "Clearance Rate (scaled)" = "coral")) +
+  theme_minimal()
+
+```
+\newpage
 
 # Discussion {#sec-discussion}
 
-## First discussion point {#sec-first-point}
+## Home Invasion and Property Theft Trends {#sec-first-point}
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
+The analysis concludes that there was a noticeable shift in crime rates following the COVID-19 pandemic. In general, crime rates including home invasion and property theft have decreased during the pandemic. These results align with previous literature cited in the introduction, which suggests that COVID-19 regulations, such as lockdowns, may have prevented criminal activity (Frith et al. 2022). However, as restrictions and regulations loosened, the number of crimes have begun to rise again.
 
-## Second discussion point
+## Spike in Present Day Crimes {#sec-second-point}
 
-## Third discussion point
-
-## Weaknesses and next steps
-
-Weaknesses and next steps should also be included.
-
-\newpage
-
-\appendix
-
-# Appendix {-}
+Three years after the onset of COVID-19, the overall number of home invasions and property thefts has reached its peak. During the pandemic, advancements in technology and remote work capabilities have led many individuals to continue spending considerable time at home. This change may explain why the rate of home invasions has not surpassed pre-COVID levels. However, property thefts have surged significantly, contributing to the overall increase in crime in Toronto. This finding should raise awareness towards the aftermaths of the pandemic that has left countless people in an economic crisis. When individuals struggle to make ends meet, they may resort to committing crimes that in turn harm even more people (Rosenfeld & Fornango 2008).
 
 
-# Additional data details
+## Pandemic Aftermaths by Division {#sec-third-point}
 
-# Model details {#sec-model-details}
+Examining the changes in property-related crimes before and after COVID-19 on a district level can provide insight into the social and economic factors that need to be improved at a more localized level. For instance, Districts 13 and 32 experienced the most significant increases in property-related crimes post-pandemic, potentially indicating socioeconomic challenges such as rising unemployment and high poverty rates that need urgent intervention. In contrast, District 52 witnessed the largest decrease in property-related crimes following the pandemic, suggesting that enhanced security measures and effective policy strategies may have been implemented. These approaches could be beneficial for other districts to adopt.
 
-## Posterior predictive check
 
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
+## Clearance Rates in Decline {#sec-fourth-point}
 
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
+Despite a significant rise in property-related crimes, clearance rates have declined. This trend indicates an urgent need for improvements in law enforcement agencies, strategies, and resources. In particular, clearance rates fell even as crime numbers decreased during the pandemic. However, in the years following the pandemic, these rates have struggled to return to pre-pandemic levels. This situation suggests that the pandemic may have exposed vulnerabilities within law enforcement, including operational delays and reduced staff. Coupled with the growing desperation faced by individuals in an economic crisis, it is essential to implement effective solutions to mitigate the risk of further crimes in the future.
 
-```{r}
-#| eval: true
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
 
-#pp_check(first_model) +
- # theme_classic() +
-  #theme(legend.position = "bottom")
+## Limitations and Next Steps {#sec-fifth-point}
 
-#posterior_vs_prior(first_model) +
- # theme_minimal() +
-#  scale_color_brewer(palette = "Set1") +
- # theme(legend.position = "bottom") +
-  #coord_flip()
-```
+The dataset has several limitations, particularly concerning reporting bias. Each year, numerous cases remain unreported for various reasons, including a general mistrust of law enforcement. Additionally, the data may include several reports documenting the same crime, and a single incident may involve multiple types of offenses which can lead to data over-representation.
 
-## Diagnostics
-
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
-
-```{r}
-#| echo: false
-#| eval: true
-#| message: false
-#| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
-
-#plot(first_model, "trace")
-
-#plot(first_model, "rhat")
-```
-
+Moving forward, it is essential to explore the socioeconomic factors influencing crime rates in each division such as household income, neighbourhood reputation, and population density. A key takeaway is the urgent need for enhancements in overall law enforcement strategies. This may involve developing new policies aimed at addressing both the prevalence of property crimes and the low clearance rates. For instance, there should be a focus on improving home security measures rather than allowing individuals to accept home invasion and property theft. This paper stresses the importance of finding effective solutions to the escalating issue of property-related crimes, particularly since these numbers have skyrocketed following the pandemic.
 
 
 \newpage
 
 
 # References
-
-# REMOVE THIS AFTER: References should be added using BibTeX. Be sure to reference R, and any R packages you use, as well as the dataset. Strong submissions will draw on related literature and reference those.
 
 
