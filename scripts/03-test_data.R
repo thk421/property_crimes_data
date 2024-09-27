@@ -26,8 +26,8 @@ if (test_year_range) {
 }
 
 # Test if all crime types are within the defined set
-test_crime_type <- all(simulated_crime_data$crime_type %in% 
-                         c("Break and Enter", "Theft", "Fraud", "Assault", 
+test_crime_type <- all(simulated_crime_data$crime_type %in%
+                         c("Break and Enter", "Theft", "Fraud", "Assault",
                            "Sexual Assault", "Attempted Murder", "Other"))
 
 if (test_crime_type) {
@@ -37,9 +37,9 @@ if (test_crime_type) {
 }
 
 # Test if all divisions are within the defined set
-test_divisions <- all(simulated_crime_data$division 
-                      %in% c("D11", "D12", "D13", "D14", "D22", "D23", "D31", 
-                             "D32", "D33", "D41", "D42", "D43", "D51", "D52", 
+test_divisions <- all(simulated_crime_data$division
+                      %in% c("D11", "D12", "D13", "D14", "D22", "D23", "D31",
+                             "D32", "D33", "D41", "D42", "D43", "D51", "D52",
                              "D53", "D55"))
 
 if (test_divisions) {
@@ -100,7 +100,7 @@ if (test_year_range) {
 }
 
 # Test if crime types of interest are within the defined set
-test_crime_type <- any(cleaned_data$crime %in% 
+test_crime_type <- any(cleaned_data$crime %in%
                          c("Home Invasion", "Property Theft"))
 
 
@@ -112,9 +112,9 @@ if (test_crime_type) {
 
 
 # Test if all divisions are within the defined set
-test_divisions <- all(cleaned_data$division 
-                      %in% c("D11", "D12", "D13", "D14", "D22", "D23", "D31", 
-                             "D32", "D33", "D41", "D42", "D43", "D51", "D52", 
+test_divisions <- all(cleaned_data$division
+                      %in% c("D11", "D12", "D13", "D14", "D22", "D23", "D31",
+                             "D32", "D33", "D41", "D42", "D43", "D51", "D52",
                              "D53", "D55", "NSA"))
 
 if (test_divisions) {
@@ -123,8 +123,9 @@ if (test_divisions) {
   print("Not all divisions are valid.")
 }
 
-# Test if all covid_period values are either "Pre-COVID" or "Post-COVID" 
-test_cleared_values <- all(cleaned_data$covid_period %in% c("Pre-COVID", "Post-COVID"))
+# Test if all covid_period values are either "Pre-COVID" or "Post-COVID"
+test_cleared_values <-
+  all(cleaned_data$covid_period %in% c("Pre-COVID", "Post-COVID"))
 
 if (test_cleared_values) {
   print("All covid_period values are either Pre-COVID or Post-COVID.")
@@ -133,7 +134,8 @@ if (test_cleared_values) {
 }
 
 # Test if count and count_cleared values are non-zero
-non_negative <- all(cleaned_data$count >= 0) && all(cleaned_data$count_cleared >= 0)
+non_negative <- all(cleaned_data$count >= 0) &&
+  all(cleaned_data$count_cleared >= 0)
 
 if (non_negative) {
   print("All count and count_cleared values are non-negative.")
@@ -143,7 +145,8 @@ if (non_negative) {
 
 # Test if there are empty values in the data
 
-data_variables <- c("year", "division", "crime", "count", "count_cleared", "covid_period")
+data_variables <-
+  c("year", "division", "crime", "count", "count_cleared", "covid_period")
 
 for (var in data_variables) {
   if (all(is.na(cleaned_data[[var]]))) {
@@ -152,4 +155,3 @@ for (var in data_variables) {
     print(paste(var, "does not contain any NA values."))
   }
 }
-
