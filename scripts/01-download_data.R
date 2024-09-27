@@ -32,4 +32,3 @@ crime_data <- filter(datastore_resources, row_number()==1) %>% get_resource()
 #### Save data ####
 write_csv(crime_data, "data/raw_data/raw_crime_data.csv") 
 
-head(crime_data)
